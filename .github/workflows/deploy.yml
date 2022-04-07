@@ -17,6 +17,7 @@ jobs:
         image: postgres
         env:
           POSTGRES_PASSWORD: optibot
+          POSTGRES_USER: optibot
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -36,5 +37,3 @@ jobs:
     - name: Build with Maven
       shell: bash
       run: mvn -B package --file pom.xml
-      env:
-        POSTGRES_HOST: postgres
