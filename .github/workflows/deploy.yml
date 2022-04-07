@@ -11,9 +11,20 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: optibot
+          POSTGRES_USER: optibot
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -21,16 +32,8 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: maven
+    - name: Copy Config
+      run: cp src/main/resources/application.example.properties src/main/resources/application.properties
     - name: Build with Maven
+      shell: bash
       run: mvn -B package --file pom.xml
-    - name: Deploy to Server
-      uses: easingthemes/ssh-deploy@main
-      env:
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          ARGS: "-rltgoDzvO --delete"
-          SOURCE: "target/OptiBot.jar"
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: ${{ secrets.REMOTE_TARGET }}
-          EXCLUDE: "src/"
