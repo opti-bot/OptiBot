@@ -30,7 +30,6 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: maven
     - name: Copy Config
       run: cp src/main/resources/application.example.properties src/main/resources/application.properties
     - name: Build with Maven
