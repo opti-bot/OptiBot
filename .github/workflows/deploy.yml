@@ -33,6 +33,7 @@ jobs:
     - name: Copy Config
       run: cp src/main/resources/application.example.properties src/main/resources/application.properties
     - name: Build with Maven
+      shell: bash
       run: mvn -B package --file pom.xml
       env:
         POSTGRES_HOST: postgres
